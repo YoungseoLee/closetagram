@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "761256659609",
+    "firebase_url": "https://closetagram.firebaseio.com",
+    "project_id": "closetagram",
+    "storage_bucket": "closetagram.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:761256659609:android:82592ee3b2dafb9e788608",
+        "android_client_info": {
+          "package_name": "com.example.closetagram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "761256659609-eplq9rr9funit3f3ivrvognng5dhtk14.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.closetagram",
+            "certificate_hash": "3907a53b338aeeb1124189653b0f141da07d57df"
+          }
+        },
+        {
+          "client_id": "761256659609-03fik7jdi7p2m2f32np7kmncd8d3gtrh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCInR0Z9I9-v6OrXDzZJn2JAwxEqorPlF4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "761256659609-03fik7jdi7p2m2f32np7kmncd8d3gtrh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
