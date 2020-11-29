@@ -3,6 +3,7 @@ package com.example.closetagram.navigation
 import android.content.Intent
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -156,7 +157,7 @@ class UserFragment : Fragment() {
                 followDTO!!.followerCount = 1
                 followDTO!!.followers[currentUserUid!!] = true
 
-                transaction.set(tsDocFollower.followDTO!!)
+                transaction.set(tsDocFollower, followDTO!!)
                 return@runTransaction
             }
             if (followDTO!!.followers.containsKey(currentUserUid)) {
@@ -168,17 +169,19 @@ class UserFragment : Fragment() {
                 followDTO!!.followerCount = followDTO!!.followerCount + 1
                 followDTO!!.followers[currentUserUid!!] = true
             }
-            transaction.set(tsDocFollower, followDTO)
+            transaction.set(tsDocFollower, followDTO!!)
             return@runTransaction
         }
     }
 
     fun getProfileImage() {
-        firestore?.collection("profileImaages")?.document(uid!!)
+        firestore?.collection("profileImages")?.document(uid!!)
             ?.addSnapshotListener { documentSnapshot, firebaseFirestoreException ->
-                if (documentSnapshot == null) return@addSnapshotListener
-                if (documentSnapshot != null) {
-                    var url = documentSnapshot?.data!!["iamge"]
+                if (documentSnapshot == null) {
+                    return@addSnapshotListener
+                }
+                if (documentSnapshot.data != null) {
+                    var url = documentSnapshot?.data!!["image"]
                     Glide.with(activity!!).load(url).apply(RequestOptions().circleCrop())
                         .into(fragmentView?.account_iv_profile!!)
                 }
