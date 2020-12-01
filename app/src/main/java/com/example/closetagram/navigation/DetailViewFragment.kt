@@ -27,7 +27,6 @@ class DetailViewFragment : Fragment() {
         savedInstanceState: Bundle?
 
     ): View? {
-        Log.d("sungho", "onCreateView")
         var view = LayoutInflater.from(activity).inflate(R.layout.fragment_detail, container, false)
         firestore = FirebaseFirestore.getInstance()
         uid = FirebaseAuth.getInstance().currentUser?.uid
@@ -59,7 +58,6 @@ class DetailViewFragment : Fragment() {
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            Log.d("sungho", "onCreateViewHolder")
             var view =
                 LayoutInflater.from(parent.context).inflate(R.layout.item_detail, parent, false)
             return CustomviewHolder(view)

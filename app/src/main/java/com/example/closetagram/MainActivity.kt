@@ -25,7 +25,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.d("sungho", "onCrate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         bottom_navigation.setOnNavigationItemSelectedListener(this);
@@ -34,7 +33,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
             1
         )
-        Log.d("sungho", "onCrate")
+
 
         bottom_navigation.selectedItemId = R.id.action_home
         registerPushToken()
@@ -93,16 +92,11 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
     }
 
     fun registerPushToken() {
-        Log.d("sungho", "registerPushToken");
         FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
             val token = task.result?.token
             val uid = FirebaseAuth.getInstance().currentUser?.uid
             val map = mutableMapOf<String, Any>()
             map["pushToken"] = token!!
-            Log.d("sungho", "token!!!");
-            Log.d("sungho", token);
-            Log.d("sungho", uid.toString());
-            Log.d("sungho", map.toString());
             FirebaseFirestore.getInstance().collection("pushtokens").document(uid!!).set(map)
         }
     }
