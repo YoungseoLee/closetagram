@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.core.app.ActivityCompat
@@ -16,12 +17,15 @@ import com.google.android.gms.tasks.Task
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
+        Log.d("sungho", "onCrate")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         bottom_navigation.setOnNavigationItemSelectedListener(this);
@@ -30,6 +34,10 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
             arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
             1
         )
+        Log.d("sungho", "onCrate")
+
+        bottom_navigation.selectedItemId = R.id.action_home
+        registerPushToken()
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
@@ -77,24 +85,26 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
         return false
     }
 
+
     fun setToolbarDefault() {
         toolbar_username.visibility = View.GONE
         toolbar_btn_back.visibility = View.GONE
         toolbar_title_image.visibility = View.VISIBLE
     }
 
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
-        setContentView(R.layout.activity_main)
-        bottom_navigation.setOnNavigationItemSelectedListener(this)
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
-            1
-        )
-
-        //Set default screen
-        bottom_navigation.selectedItemId = R.id.action_home
+    fun registerPushToken() {
+        Log.d("sungho", "registerPushToken");
+        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener { task ->
+            val token = task.result?.token
+            val uid = FirebaseAuth.getInstance().currentUser?.uid
+            val map = mutableMapOf<String, Any>()
+            map["pushToken"] = token!!
+            Log.d("sungho", "token!!!");
+            Log.d("sungho", token);
+            Log.d("sungho", uid.toString());
+            Log.d("sungho", map.toString());
+            FirebaseFirestore.getInstance().collection("pushtokens").document(uid!!).set(map)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
