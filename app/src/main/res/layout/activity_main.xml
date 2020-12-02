@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context=".MainActivity">
 
     <androidx.appcompat.widget.Toolbar
@@ -13,25 +14,40 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
 
             <ImageView
+                android:id="@+id/toolbar_btn_back"
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="220dp"
-                android:src="@drawable/ic_arrow_back"
-                android:id="@+id/toolbar_btn_back" />
+                android:src="@drawable/ic_arrow_back" />
 
             <TextView
-                android:text="userID"
-                android:textSize="16sp"
-                android:textColor="@color/colorNavIcon"
-                android:gravity="center"
-                android:layout_toRightOf="@+id/toolbar_btn_back"
                 android:id="@+id/toolbar_username"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="30dp"
+                android:gravity="center"
+                android:text="userID"
+                android:textColor="@color/colorNavIcon"
+                android:textSize="16sp" />
+
+            <Button
+                android:id="@+id/search_tag_button"
+                android:gravity="center"
+                android:layout_alignParentRight="true"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:minWidth="0dp"
+                android:minHeight="0dp"
+                android:background="@drawable/ic_search"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="30dp"
+                android:padding="0dp"
+                android:enabled="true" />
 
             <ImageView
                 android:id="@+id/toolbar_title_image"
@@ -50,9 +66,23 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"></LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/toolbar_division">
+
+        <EditText
+            android:id="@+id/tag_search_bar"
+            android:lines="1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
     <FrameLayout
         android:id="@+id/main_content"
-        android:layout_below="@+id/toolbar_division"
+        android:layout_below="@+id/search_bar"
         android:layout_above="@+id/nav_division"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></FrameLayout>
@@ -71,4 +101,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:menu="@menu/bottom_navigation_main"></com.google.android.material.bottomnavigation.BottomNavigationView>
+
 </RelativeLayout>

@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.closetagram.MainActivity
 import com.example.closetagram.R
 import com.example.closetagram.navigation.model.ContentDTO
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_grid.view.*
 
 class GridFragment : Fragment() {
@@ -26,11 +28,14 @@ class GridFragment : Fragment() {
         savedInstanceState: Bundle?
 
     ): View? {
+        var mainactivity = (activity as MainActivity)
         fragmentView =
             LayoutInflater.from(activity).inflate(R.layout.fragment_grid, container, false)
         firestore = FirebaseFirestore.getInstance()
         fragmentView?.gridfragment_recyclerview?.adapter = UserFragmentRecycleriewAdapter()
         fragmentView?.gridfragment_recyclerview?.layoutManager = GridLayoutManager(activity, 3)
+        mainactivity?.search_tag_button?.visibility = View.VISIBLE
+        
         return fragmentView
     }
 
