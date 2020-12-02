@@ -80,7 +80,8 @@ class DetailViewFragment : Fragment() {
                 .into(viewholder.detailviewitem_imageview_content)
 
             //Explain of content
-            viewholder.detailviewitem_explain_textview.text = contentDTOs!![position].explain
+            viewholder.detailviewitem_explain_textview.text =
+                contentDTOs!![position].tags.toString()
 
             //likes
             viewholder.detailviewitem_favoritecounter_textview.text =

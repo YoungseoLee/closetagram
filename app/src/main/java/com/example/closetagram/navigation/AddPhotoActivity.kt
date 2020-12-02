@@ -5,6 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.KeyEvent
+import android.view.View
 import android.widget.Toast
 import com.example.closetagram.R
 import com.example.closetagram.navigation.model.ContentDTO
@@ -14,6 +16,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
 import kotlinx.android.synthetic.main.activity_add_photo.*
+import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -40,6 +43,16 @@ class AddPhotoActivity : AppCompatActivity() {
         addphoto_btn_upload.setOnClickListener {
             contentUpload()
         }
+        // add editText enter event
+        addphoto_edit_explain.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
+                //Perform Code
+                contentUpload()
+                addphoto_edit_explain.isEnabled = false
+                return@OnKeyListener true
+            }
+            false
+        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -78,7 +91,9 @@ class AddPhotoActivity : AppCompatActivity() {
             contentDTO.userId = auth?.currentUser?.email
 
             //Insert explain of content
-            contentDTO.explain = addphoto_edit_explain.text.toString()
+            var tagsText = addphoto_edit_explain.text.toString();
+            var splitText = tagsText.split(",")
+            contentDTO.tags = splitText;
 
             //Insert timestamp
             contentDTO.timestamp = System.currentTimeMillis()

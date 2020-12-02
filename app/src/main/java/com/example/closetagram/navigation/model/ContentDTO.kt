@@ -4,7 +4,7 @@ import com.facebook.internal.Mutable
 import java.sql.Timestamp
 
 data class ContentDTO(
-    var explain: String? = null,
+    var tags: List<String> = ArrayList<String>(),
     var imageUrl: String? = null,
     var uid: String? = null,
     var userId: String? = null,

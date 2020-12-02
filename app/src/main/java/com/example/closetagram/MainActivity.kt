@@ -38,21 +38,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
         bottom_navigation.selectedItemId = R.id.action_home
         registerPushToken()
-        registerButtonEvent();
-    }
-
-    fun registerButtonEvent() {
-        search_tag_button.setOnClickListener {
-            search_bar?.visibility = View.VISIBLE
-        }
-        search_bar.setOnKeyListener(View.OnKeyListener { v, keyCode, event ->
-            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP) {
-                //Perform Code
-                search_bar?.visibility = View.GONE
-                return@OnKeyListener true
-            }
-            false
-        })
     }
 
     override fun onNavigationItemSelected(p0: MenuItem): Boolean {
@@ -103,7 +88,6 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
 
     fun setToolbarDefault() {
         search_bar.visibility = View.GONE
-        search_tag_button.visibility = View.GONE
         toolbar_username.visibility = View.GONE
         toolbar_btn_back.visibility = View.GONE
         toolbar_title_image.visibility = View.VISIBLE
