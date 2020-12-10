@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(), BottomNavigationView.OnNavigationItemS
                         Manifest.permission.READ_EXTERNAL_STORAGE
                     ) == PackageManager.PERMISSION_GRANTED
                 ) {
-                    startActivity(Intent(this, AddPhotoActivity::class.java))
+                    startActivity(Intent(this, CameraActivity::class.java))
                 }
                 return true
             }

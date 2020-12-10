@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "761256659609-7bt9l9rpp61h7et3ooveh3vcrbm3jb5e.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.closetagram",
+            "certificate_hash": "6404c4130b4f4a0b5f207f9b923d07c052ec420d"
+          }
+        },
+        {
           "client_id": "761256659609-eplq9rr9funit3f3ivrvognng5dhtk14.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
