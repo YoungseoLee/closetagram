@@ -6,6 +6,11 @@ buildscript {
         jcenter()
         mavenCentral()
     }
+    ext.versions = [
+            'lifecycle': '2.2.0',
+            'koin'     : '2.0.1',
+            'cameraX'  : '1.0.0-beta07',
+    ]
     dependencies {
         classpath "com.android.tools.build:gradle:4.0.2"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"

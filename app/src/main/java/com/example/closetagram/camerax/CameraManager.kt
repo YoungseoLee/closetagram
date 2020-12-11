@@ -1,18 +1,28 @@
 package com.example.closetagram.camerax
 
 import android.content.Context
+import android.media.Image
+import android.net.Uri
+import android.os.Environment
 import android.util.Log
 import android.view.ScaleGestureDetector
-import androidx.camera.core.Camera
-import androidx.camera.core.CameraSelector
-import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
+import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.example.closetagram.mlkit.vision.object_detection.ObjectDetectionProcessor
 import com.example.closetagram.mlkit.vision.object_detection.VisionType
+import com.example.closetagram.navigation.model.ContentDTO
+import com.google.android.gms.tasks.Task
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.UploadTask
+import java.io.File
+import java.nio.ByteBuffer
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -23,6 +33,9 @@ class CameraManager(
     private val graphicOverlay: GraphicOverlay
 ) {
 
+    var storage: FirebaseStorage? = null
+    var auth: FirebaseAuth? = null
+    var firestore: FirebaseFirestore? = null
     private var preview: Preview? = null
 
     private var camera: Camera? = null
@@ -31,12 +44,17 @@ class CameraManager(
     private var cameraProvider: ProcessCameraProvider? = null
 
     private var imageAnalyzer: ImageAnalysis? = null
+    private var imageCapture : ImageCapture? = null
 
     // default barcode scanner
     private var analyzerVisionType: VisionType = VisionType.Object
 
     init {
         createNewExecutor()
+        // 저장소 초기
+        storage = FirebaseStorage.getInstance()
+        auth = FirebaseAuth.getInstance()
+        firestore = FirebaseFirestore.getInstance()
     }
 
     private fun createNewExecutor() {
@@ -57,7 +75,7 @@ class CameraManager(
                     .also {
                         it.setAnalyzer(cameraExecutor, selectAnalyzer())
                     }
-
+                imageCapture = ImageCapture.Builder().setTargetRotation(0).build()
                 val cameraSelector = CameraSelector.Builder()
                     .requireLensFacing(cameraSelectorOption)
                     .build()
@@ -84,8 +102,9 @@ class CameraManager(
             camera = cameraProvider?.bindToLifecycle(
                 lifecycleOwner,
                 cameraSelector,
-                preview,
-                imageAnalyzer
+                imageCapture,
+                imageAnalyzer,
+                preview
             )
             preview?.setSurfaceProvider(
                 finderView.createSurfaceProvider()
@@ -112,6 +131,24 @@ class CameraManager(
         }
     }
 
+    fun takeImage(){
+        Log.d("sungho", "call take Image")
+        imageCapture?.takePicture(cameraExecutor,
+            object : ImageCapture.OnImageCapturedCallback() {
+                override fun onError(error: ImageCaptureException)
+                {
+                    Log.d("sungho", "ImageCaptureException")
+                    Log.d("sungho", error.toString())
+                    // insert your code here.
+                }
+                override fun onCaptureSuccess(image: ImageProxy) {
+
+                    Log.d("sungho", "outputFileResults : " + image.toString())
+                    contentUpload(image)
+                }
+            })
+    }
+
     private fun setUpPinchToZoom() {
         val listener = object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
             override fun onScale(detector: ScaleGestureDetector): Boolean {
@@ -127,6 +164,45 @@ class CameraManager(
                 scaleGestureDetector.onTouchEvent(event)
             }
             return@setOnTouchListener true
+        }
+    }
+    private fun imageProxyToBitmap(image: ImageProxy): ByteArray {
+        val planeProxy = image.planes[0]
+        val buffer: ByteBuffer = planeProxy.buffer
+        val bytes = ByteArray(buffer.remaining())
+        buffer.get(bytes)
+        return bytes
+    }
+
+    fun contentUpload(image: ImageProxy) {
+        //graphicOverlay
+        var timestamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        var imageFileName = "IMAGE_" + timestamp + "_.png"
+        var storageRef = storage?.reference?.child("images")?.child(imageFileName)
+        //Promise method
+        storageRef?.putBytes(imageProxyToBitmap(image))?.continueWithTask { task: Task<UploadTask.TaskSnapshot> ->
+            return@continueWithTask storageRef.downloadUrl
+        }?.addOnSuccessListener { uri ->
+            var contentDTO = ContentDTO()
+
+            //Inesert downloadrl of image
+            contentDTO.imageUrl = uri.toString()
+
+            //Insert uid od user
+            contentDTO.uid = auth?.currentUser?.uid
+
+            //Insert userId
+            contentDTO.userId = auth?.currentUser?.email
+
+            //Insert explain of content
+            var tagsText = "closet";
+            var splitText = tagsText.split(",")
+            contentDTO.tags = splitText;
+
+            //Insert timestamp
+            contentDTO.timestamp = System.currentTimeMillis()
+            Log.d("sungho", "contentDTO : " + contentDTO.toString())
+            firestore?.collection("images")?.document()?.set(contentDTO)
         }
     }
 

@@ -2,25 +2,28 @@ package com.example.closetagram
 
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.view.MenuItem
-import android.view.View
 import android.widget.Toast
+import androidx.camera.core.ImageCapture
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.MutableLiveData
 import com.example.closetagram.camerax.CameraManager
 import com.example.closetagram.databinding.ActivityCameraBinding
-import com.example.closetagram.mlkit.vision.object_detection.VisionType
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class CameraActivity: BaseActivity() {
 
-    private val binding by binding<ActivityCameraBinding>(R.layout.activity_camera)
+    private val binding by binding<ActivityCameraBinding> (R.layout.activity_camera)
+    private val viewModel: CameraViewModel by viewModel()
     private lateinit var cameraManager: CameraManager
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_camera)
         createCameraManager()
+        binding.apply {
+            lifecycleOwner = this@CameraActivity
+            viewModel = this@CameraActivity.viewModel
+            initViewModel()
+        }
         if (allPermissionsGranted()) {
             cameraManager.startCamera()
         } else {
@@ -43,6 +46,21 @@ class CameraActivity: BaseActivity() {
                 Toast.makeText(this, "Permissions not granted by the user.", Toast.LENGTH_SHORT)
                     .show()
                 finish()
+            }
+        }
+    }
+
+    private fun initViewModel() {
+        viewModel.apply {
+            onItemSelectedEvent.observe(::getLifecycle) {
+                cameraManager.changeAnalyzer(it)
+            }
+            onFabButtonEvent.observe(::getLifecycle) {
+                it?.let {
+                    cameraManager.takeImage()
+                    binding.bottomNavigationViewFinder.transform(binding.fabFinder)
+
+                }
             }
         }
     }
