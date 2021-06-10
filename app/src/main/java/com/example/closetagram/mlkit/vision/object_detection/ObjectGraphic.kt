@@ -4,6 +4,7 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Rect
+import android.util.Log
 import com.example.closetagram.camerax.GraphicOverlay
 import com.google.mlkit.vision.objects.DetectedObject
 
@@ -29,20 +30,22 @@ class ObjectGraphic(
     }
 
     override fun draw(canvas: Canvas?) {
-        // change width & height because rocate
-        val rect = calculateRect(
-            imageRect.height().toFloat(),
-            imageRect.width().toFloat(),
-            visionObject.boundingBox
-        )
-        canvas?.drawRoundRect(rect, TEXT_ROUND_CORNER, TEXT_ROUND_CORNER, boxPaint)
-        // Draws object text.
-        canvas?.drawText(
-            "cloth",
-            rect.left/ 2,
-            rect.top,
-            textPaint
-        )
+        if (visionObject.labels.isNotEmpty() && visionObject.labels[0].text === "Fashion good") {
+            // change width & height because rocate
+            val rect = calculateRect(
+                imageRect.height().toFloat(),
+                imageRect.width().toFloat(),
+                visionObject.boundingBox
+            )
+            canvas?.drawRoundRect(rect, TEXT_ROUND_CORNER, TEXT_ROUND_CORNER, boxPaint)
+            // Draws object text.
+            canvas?.drawText(
+                "cloth",
+                rect.left/ 2,
+                rect.top,
+                textPaint
+            )
+        }
     }
 
     companion object {
